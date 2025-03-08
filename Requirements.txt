@@ -1,0 +1,1 @@
+I trained my model in google collab because I could not use the gpu in my laptop. The required libraries are : os, librosa, IPython.display, matplotlib.pyplot, numpy, scipy, google.colab, sklearn.preprocessing, keras, sklearn.model_selection, tensorflow, matplotlib, random, sklearn.metrics, seaborn,

@@ -1,0 +1,1 @@
+My project was done in google collab so the location of the training file needs to be changed according to your computer location however the images location can remain unchanged.
