@@ -1,84 +1,147 @@
-# 🎙️ Speech Recognition Using Convolutional Neural Networks (CNN)
+# Speech Recognition Using Convolutional Neural Networks (CNN)
 
-<p align="center">
-  <strong>Deep Learning | Speech Processing | Audio Classification | Python</strong>
-</p>
+A deep learning project that recognises spoken words from audio recordings using a **1D Convolutional Neural Network (CNN)** built with TensorFlow and Keras.
 
-<p align="center">
-  A deep learning project exploring speech recognition through audio preprocessing and Convolutional Neural Networks (CNNs).
-</p>
+The project explores audio preprocessing, neural network design, model training, and performance evaluation for keyword spotting.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
-  <img src="https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white" />
-  <img src="https://img.shields.io/badge/Keras-D00000?style=for-the-badge&logo=keras&logoColor=white" />
-  <img src="https://img.shields.io/badge/Librosa-8A2BE2?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Google%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=black" />
-</p>
+## Project Overview
 
----
+Speech recognition enables computers to identify spoken language and convert audio into meaningful information. This project focuses on recognising individual spoken words from audio signals using a CNN.
 
-## 📌 Overview
+The model is trained on recordings from the **Google Speech Commands dataset**. Audio files are preprocessed and converted into fixed-length numerical waveforms before being passed into the neural network for classification.
 
-This project explores the application of **Convolutional Neural Networks (CNNs) in speech recognition**, using Python and deep learning techniques to process and analyse audio data.
+## Key Features
 
-The project focuses on transforming raw speech data into a suitable representation for machine learning, training a CNN-based model, and evaluating its ability to recognise speech patterns.
+- Audio preprocessing and resampling
+- Spoken-word classification using a 1D CNN
+- Multi-class classification across 30 word categories
+- Dropout regularisation to help reduce overfitting
+- Early stopping during training
+- Model evaluation using accuracy, precision, recall, and F1-score
 
-The implementation was developed using Google Colab to take advantage of GPU acceleration during model training.
+## Technologies Used
 
-## 🎯 Project Objectives
+- **Python**
+- **TensorFlow / Keras**
+- **NumPy**
+- **SciPy**
+- **Librosa**
+- **Scikit-learn**
+- **Matplotlib**
+- **Seaborn**
+- **Google Colab**
 
-- Explore deep learning techniques for speech recognition.
-- Process and prepare audio data for machine learning.
-- Apply CNN architectures to speech-related data.
-- Train and evaluate a deep learning model.
-- Analyse model performance through evaluation metrics and visualisations.
+## Dataset
 
-## 🛠️ Technologies & Tools
+This project uses the **Google Speech Commands dataset**, which contains short audio recordings of spoken words.
 
-| Technology | Purpose |
+The dataset contains approximately 65,000 one-second recordings covering 30 spoken-word categories.
+
+The audio dataset is not included in this repository. The notebook uses audio files stored in Google Drive, so the dataset directory must be configured before running the complete workflow.
+
+## Audio Preprocessing
+
+Audio preprocessing prepares the recordings for the CNN.
+
+The notebook performs the following steps:
+
+1. Loads WAV audio files.
+2. Resamples the recordings from 16 kHz to 8 kHz.
+3. Retains recordings containing exactly 8,000 samples.
+4. Encodes the word labels using `LabelEncoder`.
+5. Converts labels into one-hot encoded vectors.
+6. Reshapes the audio data into the CNN input format.
+
+The resulting input shape is:
+
+```python
+(8000, 1)
+```
+
+**Feature representation:** The CNN uses raw audio waveforms as its input. Although MFCCs and spectrograms are discussed as audio-processing techniques, they are not the input representation used by the implemented CNN.
+
+## CNN Architecture
+
+The project implements a one-dimensional Convolutional Neural Network designed to learn patterns directly from audio waveforms.
+
+The architecture contains five convolutional blocks:
+
+| Layer | Filters | Kernel Size | Activation |
+|---|---:|---:|---|
+| Conv1D | 8 | 13 | ReLU |
+| Conv1D | 16 | 11 | ReLU |
+| Conv1D | 32 | 9 | ReLU |
+| Conv1D | 64 | 7 | ReLU |
+| Conv1D | 128 | 5 | ReLU |
+
+Each convolutional block is followed by max pooling and dropout.
+
+The convolutional layers are followed by:
+
+- Flatten layer
+- Dense layer with 256 units
+- Dense layer with 128 units
+- Dense layer with 64 units
+- Softmax output layer for 30 classes
+
+**Total trainable parameters:** 1,088,062
+
+## Model Training
+
+The model uses the following training configuration:
+
+| Parameter | Value |
 |---|---|
-| Python | Core programming language |
-| TensorFlow | Deep learning framework |
-| Keras | Neural network implementation |
-| Librosa | Audio processing and analysis |
-| NumPy | Numerical computation |
-| SciPy | Scientific computing |
-| Scikit-learn | Data preprocessing and evaluation |
-| Matplotlib | Data visualisation |
-| Seaborn | Statistical visualisation |
-| Google Colab | Cloud-based development and GPU training |
+| Optimiser | Adam |
+| Loss function | Categorical Crossentropy |
+| Evaluation metric | Accuracy |
+| Batch size | 100 |
+| Maximum epochs | 100 |
+| Early stopping monitor | Validation loss |
+| Early stopping patience | 15 |
+| Minimum improvement | 0.0001 |
 
-## ⚙️ Project Workflow
+Early stopping is used to stop training when validation loss no longer improves sufficiently.
 
-The project follows a machine learning workflow:
+The notebook reports an 80% training split, with the remaining data divided into validation and test sets. The final validation/test split is not stratified.
 
-1. **Audio Data Processing** – Loading and preparing audio data for analysis.
-2. **Feature Preparation** – Processing speech signals into representations suitable for model training.
-3. **Model Development** – Implementing a CNN-based deep learning model.
-4. **Model Training** – Training the model using the prepared data.
-5. **Model Evaluation** – Assessing performance using evaluation metrics.
-6. **Visualisation** – Analysing results through graphical representations.
+## Model Performance
 
-## 📂 Repository Structure
+The saved notebook outputs report the following test-set performance:
+
+<escape> </escape>
+
+| Metric | Test Result |
+|---|---:|
+| Accuracy | **86%** |
+| Macro Precision | 0.87 |
+| Macro Recall | 0.85 |
+| Macro F1-score | 0.86 |
+| Weighted Precision | 0.86 |
+| Weighted Recall | 0.86 |
+| Weighted F1-score | 0.86 |
+
+The best recorded validation accuracy was **87.16% at epoch 96**.
+
+These figures are taken from the saved notebook outputs and have not been independently reproduced in a fresh environment.
+
+## Repository Structure
 
 ```text
 Speech-Recognition-Using-CNN/
 │
-├── images/
-│   └── Project visualisations
-│
 ├── Cw1_w1843754_FardinAhmed.ipynb
-│   └── Main project implementation
-│
+├── images/
 ├── Requirements.txt
-│   └── Project dependencies and environment notes
-│
 └── README.md
-    └── Project documentation
 ```
 
-## 🚀 Getting Started
+- `Cw1_w1843754_FardinAhmed.ipynb` — notebook containing the preprocessing, CNN implementation, training, and evaluation workflow.
+- `images/` — project images and visual materials.
+- `Requirements.txt` — existing project requirements file.
+- `README.md` — project documentation.
+
+## Getting Started
 
 ### 1. Clone the repository
 
@@ -92,60 +155,57 @@ git clone https://github.com/fardinAhmed285/Speech-Recognition-Using-CNN.git
 cd Speech-Recognition-Using-CNN
 ```
 
-### 3. Install the dependencies
+### 3. Install the Python dependencies
 
-The project uses TensorFlow, Keras, Librosa, and other scientific Python libraries.
+A starting installation command is:
 
 ```bash
 pip install tensorflow keras librosa numpy scipy scikit-learn matplotlib seaborn
 ```
 
-### 4. Open the notebook
+Depending on your Python environment, compatible package versions may need to be selected.
 
-The project was originally developed in Google Colab.
+### 4. Configure the dataset
 
-Open `Cw1_w1843754_FardinAhmed.ipynb` in Google Colab or Jupyter Notebook.
+Download the Google Speech Commands dataset and configure the audio directory in the notebook to point to your dataset location.
 
-**Important:** Update the dataset and file paths in the notebook to match your environment. GPU acceleration is recommended for model training.
+If using Google Colab, mount Google Drive and update the dataset path accordingly.
 
-## 📊 Results & Evaluation
+### 5. Run the notebook
 
-The project includes model evaluation and visualisations to examine the performance of the trained CNN.
+Open:
 
-The notebook contains the implementation and experimental outputs.
+`Cw1_w1843754_FardinAhmed.ipynb`
 
-*Note: Quantitative performance metrics should be added here once verified from the notebook.*
+Run the cells in sequence to perform preprocessing, build the CNN, train the model, and evaluate its performance.
 
-## 💡 Key Learning Outcomes
+## Model Output
 
-Through this project, I explored:
+The notebook includes code for saving the trained model in HDF5 format (`kws.h5`) and TensorFlow SavedModel format.
 
-- Practical applications of CNNs in audio-related machine learning.
-- Audio preprocessing and feature preparation using Librosa.
-- Building and training neural networks using TensorFlow and Keras.
-- Using GPU-enabled cloud environments for deep learning.
-- Evaluating machine learning models and interpreting visual results.
+The generated model files depend on running the training workflow; they are not listed as part of the repository structure above.
 
-## 🔮 Future Improvements
+## Future Improvements
 
 Potential extensions to this project include:
 
-- Experimenting with different CNN architectures.
-- Improving model performance through hyperparameter tuning.
-- Exploring advanced audio feature extraction techniques.
-- Testing the model on additional unseen speech samples.
-- Developing an interactive speech recognition interface.
+- Experimenting with MFCC and Mel-spectrogram input features.
+- Comparing CNN performance with recurrent neural networks and other architectures.
+- Applying data augmentation to improve robustness.
+- Improving recognition accuracy through hyperparameter tuning.
+- Testing the model on unseen real-world audio recordings.
+- Developing a real-time speech recognition interface.
 
-## 👨‍💻 Author
+## Author
 
 **Fardin Ahmed**
 
-Interested in Machine Learning, Deep Learning, Artificial Intelligence, and Software Development.
+GitHub: [@fardinAhmed285](https://github.com/fardinAhmed285)
 
-- GitHub: [@fardinAhmed285](https://github.com/fardinAhmed285)
-- Project Repository: [Speech Recognition Using CNN](https://github.com/fardinAhmed285/Speech-Recognition-Using-CNN)
+## Project Repository
+
+[Speech Recognition Using CNN — GitHub](https://github.com/fardinAhmed285/Speech-Recognition-Using-CNN)
 
 ---
 
-⭐ If you find this project interesting, feel free to explore the repository!
-
+*This project was developed for learning and experimentation with deep learning techniques for audio classification and speech recognition.*
